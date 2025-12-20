@@ -107,7 +107,7 @@ session_start();
     $conn = pg_connect("host=localhost dbname=event user=phpuser password=root");
 
     if (!$conn) {
-        die("Database connection failed");
+        die("Database connection failed");  
     }
 
     // Get input
