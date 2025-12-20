@@ -1,0 +1,6 @@
+sudo -i -u postgres #open 
+psql  #open postgres
+
+\q  # for exit
+
+ php -S localhost:9000
