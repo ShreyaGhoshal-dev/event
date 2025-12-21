@@ -65,18 +65,23 @@ session_start();
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg custom-navbar">
-    <div class="container-fluid">
-        <span class="navbar-brand fw-bold">HOME</span>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php">HOME</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
 
-        <div class="ms-auto">
-            <a class="nav-link d-inline px-3" href="sql.php">SQL</a>
-            <a class="nav-link d-inline px-3" href="answer.php">ANSWER</a>
-            <a class="nav-link d-inline px-3" href="schema.php">SCHEMA</a>
+                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="answer.php">ANSWER</a>
+                    <a class="nav-link" href="schema.php">SCHEMA</a>
+                </div>
+            </div>
         </div>
-    </div>
-</nav>
-
+    </nav>
 <!-- MAIN CONTENT -->
 <div class="container d-flex justify-content-center align-items-center mt-5">
     <div class="col-md-8 answer-card">
@@ -110,7 +115,7 @@ session_start();
     <?php
 
     // Connect to PostgreSQL
-    $conn = pg_connect("host=localhost dbname=event user=phpuser password=root");
+    $conn = pg_connect("host=localhost dbname=users user=postgres password=root");
 
     if (!$conn) {
         die("Database connection failed");
