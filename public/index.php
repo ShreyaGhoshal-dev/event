@@ -178,6 +178,8 @@ session_start();
                                 } else {
                                     echo '<div class="alert alert-warning">No submissions yet!</div>';
                                 }
+
+                                echo '<a href="index.php" class="btn btn-outline-dark btn-sm w-100 mt-3">Refresh Leaderboard</a>';
                             }
                             break;
 

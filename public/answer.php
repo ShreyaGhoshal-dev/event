@@ -1,6 +1,16 @@
 <?php
 session_start();
 
+// 1. PHP Redirect: Add this near the top, after session_start()
+$status = '';
+if (file_exists('status.txt')) {
+    $status = trim(file_get_contents('status.txt'));
+    if ($status === '5') {
+        header("Location: index.php");
+        exit;
+    }
+}
+
 // Handle form submission logic at the top
 $message = "";
 $msgType = "";
@@ -168,6 +178,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 
+<!-- 2. Auto-Redirect Script: Add this before the closing </body> tag -->
+<script>
+    setInterval(function() {
+        // Check status.txt every 3 seconds
+        // We add a timestamp (?t=...) to prevent browser caching
+        fetch('status.txt?t=' + new Date().getTime())
+            .then(response => response.text())
+            .then(status => {
+                // If status becomes 5 (Winners), redirect immediately
+                if (status.trim() === '5') {
+                    window.location.href = 'index.php';
+                }
+            })
+            .catch(err => console.log('Waiting for status update...'));
+    }, 3000);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
