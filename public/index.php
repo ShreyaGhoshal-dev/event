@@ -1,21 +1,23 @@
 <?php
 session_start();
-
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Portal</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
             background: linear-gradient(180deg, #fff7e6, #f5e6c8);
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
         }
 
         .navbar {
@@ -28,162 +30,173 @@ session_start();
             font-weight: 800;
         }
 
-        .nav-link {
-            color: #441a02 !important;
-            font-weight: 600;
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .card {
-            border-radius: 16px;
+        .menu-card {
             background-color: #fffaf0;
+            border-radius: 20px;
             border: none;
-            box-shadow: 0 10px 30px rgba(68, 26, 2, 0.05);
+            box-shadow: 0 15px 35px rgba(68, 26, 2, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #441a02;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: #8c6b5d;
             margin-bottom: 2rem;
         }
 
-        .card-body {
-            padding: 2rem;
-        }
-
-        h4,
-        h5 {
+        .btn-round {
+            background-color: #fff;
             color: #441a02;
-            font-weight: 700;
-        }
-
-        .btn-primary {
-            background-color: #441a02;
-            border-color: #441a02;
-            padding: 10px 30px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        .btn-primary:hover {
-            background-color: #5e2403;
-            border-color: #5e2403;
-        }
-
-        .form-control {
             border: 2px solid #e6d2a8;
-            border-radius: 10px;
-            padding: 12px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            display: block;
+            text-decoration: none;
         }
 
-        .form-control:focus {
+        .btn-round:hover {
+            background-color: #441a02;
+            color: #fff;
             border-color: #441a02;
-            box-shadow: 0 0 0 4px rgba(68, 26, 2, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(68, 26, 2, 0.2);
         }
     </style>
-
-
 </head>
-
-
 
 <body>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
-        crossorigin="anonymous"></script>
-
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="lvl1.php">HOME</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-
-                    <a class="nav-link" href="lvl1_sql.php">SQL</a>
-                    <a class="nav-link" href="answer.php">ANSWER</a>
-                    <a class="nav-link" href="lvl1_schema.php">SCHEMA</a>
-                </div>
-            </div>
+            <a class="navbar-brand" href="#">EVENT PORTAL</a>
         </div>
     </nav>
-    <div class="container mt-4">
 
-        <!-- Case Brief Card -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
+    <div class="container main-content">
+        <div class="menu-card">
+            <h1>Welcome</h1>
+            <p class="subtitle">Select the active round to begin</p>
 
-                <h4 class="mb-3">📂 Case Brief </h4>
+            <div class="d-grid gap-2">
+                <?php
+                $status = '';
+                // Read the status file
+                if (file_exists('status.txt')) {
+                    $status = trim(file_get_contents('status.txt'));
+                }
 
-                <p>
-                    Set in the gritty 1980s, a valuable briefcase has disappeared from the Blue Note Lounge. A witness
-                    reported that a man in a trench coat was seen fleeing the scene. Investigate the crime scene, review
-                    the list of suspects, and examine interview transcripts to reveal the culprit.
-                </p>
+                // 1. Check for RESET command
+                if ($status === 'reset') {
+                    include_once 'db.php';
+                    $conn = getDBConnection('users', 'postgres');
+                    
+                    if ($conn) {
+                        // Clear the database automatically
+                        $query = "TRUNCATE TABLE users RESTART IDENTITY";
+                        @pg_query($conn, $query);
+                    }
 
-                <p>
-                <h4 class="mb-3">Objectives </h4>
+                    echo '
+                    <div class="alert alert-info" role="alert" style="background-color: #e8f4f8; border-color: #b8daff; color: #004085;">
+                        <strong>🔄 System Reset</strong><br>
+                        The previous round data has been cleared. Please wait for the host to start the next level.
+                    </div>
+                    <button onclick="location.reload()" class="btn btn-outline-dark btn-sm w-100 mt-2">Check for Updates</button>';
+                } 
+                // 2. Normal Round Logic
+                else {
+                    $round = (int)$status;
 
-                1.Retrieve the correct crime scene details to gather the key clue.<br>
-                2.Identify the suspect whose profile matches the witness description. <br>
-                3.Verify the suspect using their interview transcript. <br>
-                </p>
+                    // Show button based on the number in status.txt
+                    switch ($round) {
+                        case 1:
+                            echo '<a href="lvl1.php" class="btn-round">Start Level 1</a>';
+                            break;
+                        case 2:
+                            echo '<a href="lvl2.php" class="btn-round">Start Level 2</a>';
+                            break;
+                        case 3:
+                            echo '<a href="final_lvl1.php" class="btn-round">Start Final Level 1</a>';
+                            break;
+                        case 4:
+                            echo '<a href="final_lvl2.php" class="btn-round">Start Final Level 2</a>';
+                            break;
+                        
+                        // Case 5 for Results
+                        case 5:
+                            include_once 'db.php';
+                            $conn = getDBConnection('users', 'postgres');
+                            
+                            echo '<h2 class="mb-4" style="color:#441a02;">🏆 Round Winners 🏆</h2>';
+                            
+                            if ($conn) {
+                                // Fetch top 5 users with answers, ordered by time (earliest first)
+                                $sql = "SELECT name, time FROM users WHERE ans IS NOT NULL AND time IS NOT NULL ORDER BY time ASC LIMIT 5";
+                                $result = pg_query($conn, $sql);
+                                
+                                if (pg_num_rows($result) > 0) {
+                                    echo '<div class="list-group shadow-sm">';
+                                    $rank = 1;
+                                    while ($row = pg_fetch_assoc($result)) {
+                                        $medal = "";
+                                        if($rank == 1) $medal = "🥇";
+                                        elseif($rank == 2) $medal = "🥈";
+                                        elseif($rank == 3) $medal = "🥉";
+                                        
+                                        // Format time only showing H:M:S
+                                        $timeDisplay = date('H:i:s', strtotime($row['time']));
+                                        
+                                        echo '
+                                        <div class="list-group-item d-flex justify-content-between align-items-center" style="background-color: #fff; border-color: #e6d2a8;">
+                                            <span class="fw-bold" style="color:#441a02; font-size: 1.2rem;">' . $medal . ' ' . $rank . '. ' . htmlspecialchars($row['name']) . '</span>
+                                            <span class="badge rounded-pill" style="background-color: #441a02;">' . $timeDisplay . '</span>
+                                        </div>';
+                                        $rank++;
+                                    }
+                                    echo '</div>';
+                                } else {
+                                    echo '<div class="alert alert-warning">No submissions yet!</div>';
+                                }
+                            }
+                            break;
 
+                        default:
+                            echo '
+                            <div class="alert alert-warning" role="alert" style="background-color: #fff9e8; border-color: #e6d2a8; color: #856404;">
+                                <strong>⏸️ Event Paused</strong><br>
+                                Please wait for the host to start the next round.
+                            </div>
+                            <button onclick="location.reload()" class="btn btn-outline-dark btn-sm w-100">Check for Updates</button>';
+                            break;
+                    }
+                }
+                ?>
             </div>
         </div>
-
-        <!-- Name Input Card -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <h5 class="mb-3">🕵️ Detective Details</h5>
-
-                <form method="post">
-                    <input type="text" name="name" class="form-control mb-3" placeholder="Enter your name" required>
-
-                    <button type="submit" class="btn btn-primary">
-                        Submit
-                    </button>
-                </form>
-
-            </div>
-        </div>
-
     </div>
 
-    <?php
-
-    // PostgreSQL connection
-    include 'db.php';
-    $conn = getDBConnection('users', 'postgres');
-
-    if (!$conn) {
-        die("Database connection failed");
-    }
-
-    // Get input
-    $name = $_POST['name'] ?? '';
-    $_SESSION['name'] = $name;
-    if ($name != '') {
-        // Insert into database
-        $query = "INSERT INTO users (name) VALUES ('$name')";
-        pg_query($conn, $query);
-
-        echo '
-        <div class="container mt-3">
-            <div class="alert alert-dismissible fade show shadow-sm" role="alert" 
-                 style="background-color: #fff9e8; border-left: 5px solid #441a02; color: #441a02;">
-                <strong>👋 Hello ' . htmlspecialchars($name) . '!</strong> Your name is saved!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>';
-    }
-    ?>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict OTtLdfFILqsOzmL6rMGWZxyz3fb37cryoS6tmhfYCToSsgQHVsWdugFaA0pK7rx
+\restrict rqR3XWoB7NozHbzVVDwISz4c1ZrVcaefGwVdSDZiejb5bYSA80se37Hed7k6NFY
 
 -- Dumped from database version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
@@ -29,7 +29,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.users (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    ans text
+    ans text,
+    "time" timestamp without time zone
 );
 
 
@@ -68,7 +69,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, name, ans) FROM stdin;
+COPY public.users (id, name, ans, "time") FROM stdin;
 \.
 
 
@@ -76,7 +77,7 @@ COPY public.users (id, name, ans) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
@@ -99,5 +100,5 @@ ALTER TABLE ONLY public.users
 -- PostgreSQL database dump complete
 --
 
-\unrestrict OTtLdfFILqsOzmL6rMGWZxyz3fb37cryoS6tmhfYCToSsgQHVsWdugFaA0pK7rx
+\unrestrict rqR3XWoB7NozHbzVVDwISz4c1ZrVcaefGwVdSDZiejb5bYSA80se37Hed7k6NFY
 

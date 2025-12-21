@@ -117,7 +117,7 @@ session_start();
         <div class="card shadow-sm mb-4">
             <div class="card-body">
 
-                <h4 class="mb-3">📂 Case Brief </h4>
+                <h4 class="mb-3">The Vanishing Briefcase </h4>
 
                 <p>
                     Set in the gritty 1980s, a valuable briefcase has disappeared from the Blue Note Lounge. A witness
@@ -171,16 +171,30 @@ session_start();
     if ($name != '') {
         // Insert into database
         $query = "INSERT INTO users (name) VALUES ('$name')";
-        pg_query($conn, $query);
+        $result = @pg_query($conn, $query); // Use @ to suppress the warning
 
-        echo '
-        <div class="container mt-3">
-            <div class="alert alert-dismissible fade show shadow-sm" role="alert" 
-                 style="background-color: #fff9e8; border-left: 5px solid #441a02; color: #441a02;">
-                <strong>👋 Hello ' . htmlspecialchars($name) . '!</strong> Your name is saved!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>';
+        if ($result) {
+            echo '
+            <div class="container mt-3">
+                <div class="alert alert-dismissible fade show shadow-sm" role="alert" 
+                     style="background-color: #fff9e8; border-left: 5px solid #441a02; color: #441a02;">
+                    <strong>👋 Hello ' . htmlspecialchars($name) . '!</strong> Your name is saved!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>';
+        } else {
+            $error = pg_last_error($conn);
+            if (strpos($error, 'users_name_key') !== false) {
+                echo '
+                <div class="container mt-3">
+                    <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert" 
+                         style="border-left: 5px solid #ffc107; color: #856404;">
+                        <strong>⚠️ Username Taken!</strong> The name <strong>' . htmlspecialchars($name) . '</strong> is already registered. Please try a different name.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>';
+            }
+        }
     }
     ?>
 

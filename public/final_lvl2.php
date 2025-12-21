@@ -117,22 +117,19 @@ session_start();
         <div class="card shadow-sm mb-4">
             <div class="card-body">
 
-                <h4 class="mb-3">The Stolen Sound </h4>
+                <h4 class="mb-3"> The Silicon Sabotage </h4>
 
                 <p>
-                    In the neon glow of 1980s Los Angeles, the West Hollywood Records store was rocked by a daring
-                    theft. A prized vinyl record, worth over $10,000, vanished during a busy evening, leaving the store
-                    owner desperate for answers. Vaguely recalling the details, you know the incident occurred on July
-                    15, 1983, at this famous store. Your task is to track down the thief and bring them to justice.
+                    QuantumTech, Miami’s leading technology corporation, was about to unveil its groundbreaking
+                    microprocessor called “QuantaX.” Just hours before the reveal, the prototype was destroyed, and all
+                    research data was erased. Detectives suspect corporate espionage.
                 </p>
 
                 <p>
                 <h4 class="mb-3">Objectives </h4>
 
-                1.Retrieve the crime scene report for the record theft using the known date and location. <br>
-                2.Retrieve witness records linked to that crime scene to obtain their clues. <br>
-                3.Use the clues from the witnesses to find the suspect in the suspects table.<br>
-                4.Retrieve the suspect's interview transcript to confirm the confession.<br>
+                1.Find who sabotaged the microprocessor. <br>
+                
                 </p>
 
             </div>
@@ -174,16 +171,30 @@ session_start();
     if ($name != '') {
         // Insert into database
         $query = "INSERT INTO users (name) VALUES ('$name')";
-        pg_query($conn, $query);
-
-        echo '
-        <div class="container mt-3">
-            <div class="alert alert-dismissible fade show shadow-sm" role="alert" 
-                 style="background-color: #fff9e8; border-left: 5px solid #441a02; color: #441a02;">
-                <strong>👋 Hello ' . htmlspecialchars($name) . '!</strong> Your name is saved!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>';
+        $result = @pg_query($conn, $query); // Use @ to suppress the warning
+    
+        if ($result) {
+            echo '
+            <div class="container mt-3">
+                <div class="alert alert-dismissible fade show shadow-sm" role="alert" 
+                     style="background-color: #fff9e8; border-left: 5px solid #441a02; color: #441a02;">
+                    <strong>👋 Hello ' . htmlspecialchars($name) . '!</strong> Your name is saved!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>';
+        } else {
+            $error = pg_last_error($conn);
+            if (strpos($error, 'users_name_key') !== false) {
+                echo '
+                <div class="container mt-3">
+                    <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert" 
+                         style="border-left: 5px solid #ffc107; color: #856404;">
+                        <strong>⚠️ Username Taken!</strong> The name <strong>' . htmlspecialchars($name) . '</strong> is already registered. Please try a different name.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>';
+            }
+        }
     }
     ?>
 
