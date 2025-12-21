@@ -4,3 +4,11 @@ psql  #open postgres
 \q  # for exit
 
  php -S localhost:9000
+
+psql -U postgres -f roles_backup.sql
+
+# Create the database first
+createdb -U postgres users
+
+# Import the data
+psql -U postgres -d users -f users.sql
