@@ -1,156 +1,139 @@
-# Event Portal - LAN Hosting Guide
+# Event Portal – Full Installation & Hosting Guide
 
-This is a PHP & PostgreSQL web application designed to be hosted on a local server for an event. Participants connect via LAN to solve puzzles and submit answers.
+A PHP + PostgreSQL LAN web app for running timed SQL puzzle rounds. Hosts control the active round via [`public/status.txt`](public/status.txt); participants join over LAN and submit answers that are stored in the `users` database.
 
-## 📋 Prerequisites
+## 1) Prerequisites
+- PHP 8.x with `php-pgsql`
+- PostgreSQL
+- Git (optional)
 
-Ensure your server PC (Linux/Ubuntu recommended) has the following installed:
-* **PHP** (with PostgreSQL extension)
-* **PostgreSQL**
-* **Git** (optional, for cloning)
-
+Ubuntu/Debian example:
 ```bash
-# Ubuntu/Debian installation example:
 sudo apt update
-sudo apt install php php-pgsql postgresql postgresql-contrib
+sudo apt install php php-pgsql postgresql postgresql-contrib git
 ```
 
-## ⚙️ 1. Database Setup
+## 2) Get the Code
+```bash
+git clone <repo_url> event
+cd event
+```
 
-Before starting the server, set up the database and tables.
+## 3) PostgreSQL Setup
 
-1. **Start PostgreSQL service:**
+### 3.1 Start service
 ```bash
 sudo service postgresql start
 ```
 
-2. **Create the Database & Import Tables:**
-Run these from the project root:
+### 3.2 Set passwords (matches [`public/db.php`](public/db.php) defaults)
 ```bash
-# Create the main database
-sudo -u postgres createdb users
-
-# Import the table structures
-sudo -u postgres psql -d users -f databases/users.sql
-
-# Optional: Import level data if needed
-# sudo -u postgres psql -d users -f databases/level_1.sql
-# sudo -u postgres psql -d users -f databases/level_2.sql
-# sudo -u postgres psql -d users -f databases/final_lvl1.sql
-# sudo -u postgres psql -d users -f databases/final_lvl2.sql
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
+sudo -u postgres psql -c "CREATE ROLE sqluser WITH LOGIN PASSWORD 'root';"
 ```
 
-3. **Ensure the time column exists (for leaderboard):**
+### 3.3 Create databases
+```bash
+sudo -u postgres createdb users
+sudo -u postgres createdb level_1
+sudo -u postgres createdb level_2
+sudo -u postgres createdb final_lvl1
+sudo -u postgres createdb final_lvl2
+```
+
+### 3.4 Import schemas/data
+```bash
+sudo -u postgres psql -d users      -f databases/users.sql
+sudo -u postgres psql -d level_1    -f databases/level_1.sql
+sudo -u postgres psql -d level_2    -f databases/level_2.sql
+sudo -u postgres psql -d final_lvl1 -f databases/final_lvl1.sql
+sudo -u postgres psql -d final_lvl2 -f databases/final_lvl2.sql
+```
+
+### 3.5 Grant permissions to `sqluser` (read-only levels, write to users)
+```bash
+# For each level DB (example: level_1)
+sudo -u postgres psql -d level_1 -c "GRANT CONNECT ON DATABASE level_1 TO sqluser;"
+sudo -u postgres psql -d level_1 -c "GRANT USAGE ON SCHEMA public TO sqluser;"
+sudo -u postgres psql -d level_1 -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO sqluser;"
+sudo -u postgres psql -d level_1 -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO sqluser;"
+
+# For users DB (needed by participants and host views)
+sudo -u postgres psql -d users -c "GRANT CONNECT, TEMP ON DATABASE users TO sqluser;"
+sudo -u postgres psql -d users -c "GRANT USAGE ON SCHEMA public TO sqluser;"
+sudo -u postgres psql -d users -c "GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO sqluser;"
+sudo -u postgres psql -d users -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE ON TABLES TO sqluser;"
+```
+
+### 3.6 Ensure leaderboard column
 ```bash
 sudo -u postgres psql -d users -c "ALTER TABLE users ADD COLUMN IF NOT EXISTS time TIMESTAMP;"
 ```
 
-## 🚀 2. Hosting on LAN
+## 4) Configure
+- If you change database credentials, update [`public/db.php`](public/db.php).
+- Control active round by editing [`public/status.txt`](public/status.txt) (see values below).
 
-To allow other computers to connect, bind the PHP server to `0.0.0.0`.
-
-1. **Find your Local IP Address:**
-```bash
-hostname -I
-```
-Use the first IP (e.g., `192.168.1.15`).
-
-2. **Start the Server:**
-From the project root:
+## 5) Run the Server (LAN)
+From project root:
 ```bash
 php -S 0.0.0.0:9000 -t public
 ```
-
-3. **Connect from Client PCs:**
-Clients open:
-```
-http://<SERVER_IP>:9000
-```
-Example: `http://192.168.1.15:9000`
-
-Troubleshooting: If clients cannot connect, open port 9000:
+Clients open `http://<SERVER_IP>:9000`. If blocked, allow the port:
 ```bash
 sudo ufw allow 9000/tcp
 ```
 
-## 🎮 3. Game Management (Host Guide)
+## 6) Host Controls (status.txt values)
+- `1` → Level 1 (`lvl1.php`)
+- `2` → Level 2 (`lvl2.php`)
+- `3` → Final Level 1 (`final_lvl1.php`)
+- `4` → Final Level 2 (`final_lvl2.php`)
+- `5` → Leaderboard (Top 5 fastest)
+- `reset` → Truncate `users` table
+- `0` → Pause screen
 
-Control the event using `public/status.txt`.
-
-### Status values
-| Value   | Effect |
-|--------:|--------|
-| `1`     | Start Level 1 |
-| `2`     | Start Level 2 |
-| `3`     | Final Level 1 |
-| `4`     | Final Level 2 |
-| `5`     | Leaderboard (Top 5 fastest) |
-| `reset` | Wipe data (clears users table) |
-| `0`     | Pause (Please wait screen) |
-
-### Typical workflow
-1. Set `status.txt` to `1`. (Start)
-2. When ready to show winners, set `status.txt` to `5`.
+Typical round:
+1. Set `status.txt` to `1` (or next round number).
+2. When showing winners, set to `5`.
 3. Backup data.
-4. Set `status.txt` to `reset` to clear DB.
-5. Set `status.txt` to next round value (e.g., `2`).
+4. Set to `reset` to clear.
+5. Set to the next round number.
 
-## 💾 Backup & Restore
-
-### Quick backup (manual)
+## 7) Backup & Restore
+Quick backup (as postgres):
 ```bash
-# Run as postgres user
 sudo -u postgres pg_dump users > backups/users_backup_$(date +%F_%H-%M-%S).sql
 ```
-
-### Restore into a new DB (safe)
+Restore into a new DB:
 ```bash
-# create a new db and restore into it
 sudo -u postgres createdb old_round_data
-sudo -u postgres psql -d old_round_data -f backups/users_backup_2025-12-21_21-45-00.sql
+sudo -u postgres psql -d old_round_data -f backups/users_backup_<timestamp>.sql
 ```
+Optional script: create `backup.sh` as in current README, then `chmod +x backup.sh` and run before `reset`.
 
-### Automated backup script (optional)
-Create `backup.sh` in project root:
-```bash
-#!/bin/bash
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-mkdir -p backups
-sudo -u postgres pg_dump users > backups/users_backup_$TIMESTAMP.sql
-echo "Backup saved to backups/users_backup_$TIMESTAMP.sql"
-```
-Make it executable:
-```bash
-chmod +x backup.sh
-```
-Run `./backup.sh` before setting `status.txt` to `reset`.
+## 8) Useful Commands
+- Start server: `php -S 0.0.0.0:9000 -t public`
+- Dump DB: `sudo -u postgres pg_dump users > users.sql`
+- Clear users table: `sudo -u postgres psql -d users -c "TRUNCATE TABLE users RESTART IDENTITY;"`
 
-## 🧰 Useful Commands
+## 9) Troubleshooting
+- Cannot connect: ensure Postgres service is running and passwords match `db.php`.
+- Clients can’t reach server: confirm LAN IP and that port 9000 is allowed.
+- Schema pages empty: verify level databases are imported and `sqluser` has SELECT privileges.
 
-- Start server:
-```bash
-php -S 0.0.0.0:9000 -t public
-```
-- Dump DB as postgres user (no password prompt):
-```bash
-sudo -u postgres pg_dump users > users.sql
-```
-- Truncate users table (clears data, resets IDs):
-```bash
-sudo -u postgres psql -d users -c "TRUNCATE TABLE users RESTART IDENTITY;"
-```
+## 10) File Map
+- App entry & router: [`public/index.php`](public/index.php)
+- Per-round pages: [`public/lvl1.php`](public/lvl1.php), [`public/lvl2.php`](public/lvl2.php), [`public/final_lvl1.php`](public/final_lvl1.php), [`public/final_lvl2.php`](public/final_lvl2.php)
+- SQL consoles: [`public/lvl1_sql.php`](public/lvl1_sql.php), [`public/lvl2_sql.php`](public/lvl2_sql.php), [`public/final_lvl1_sql.php`](public/final_lvl1_sql.php), [`public/final_lvl2_sql.php`](public/final_lvl2_sql.php)
+- Schemas: [`public/lvl1_schema.php`](public/lvl1_schema.php), [`public/lvl2_schema.php`](public/lvl2_schema.php), [`public/final_lvl1_schema.php`](public/final_lvl1_schema.php), [`public/final_lvl2_schema.php`](public/final_lvl2_schema.php)
+- Answer submission: [`public/answer.php`](public/answer.php)
+- DB helper: [`public/db.php`](public/db.php)
+- SQL dumps: [`databases/users.sql`](databases/users.sql), [`databases/level_1.sql`](databases/level_1.sql), [`databases/level_2.sql`](databases/level_2.sql), [`databases/final_lvl1.sql`](databases/final_lvl1.sql), [`databases/final_lvl2.sql`](databases/final_lvl2.sql), [`databases/roles_backup.sql`](databases/roles_backup.sql)
 
-## 🔐 Notes & Recommendations
-
-* Always backup (`pg_dump`) before clearing data.
-* Use `status.txt` to centrally control participant views.
-* Keep `reset` action deliberate — anyone refreshing after `reset` will trigger the clear if your code is set to auto-truncate; consider restricting reset to host-only if preferred.
-* For production or larger events, consider a proper webserver (Nginx/Apache + PHP-FPM) and HTTPS.
-
-## ✅ Ready to Host
-
-1. Ensure DB is set up.
-2. Set `public/status.txt` to `1`.
-3. Start PHP server bound to `0.0.0.0`.
-4. Share `http://<SERVER_IP>:9000` with participants.
-
+## 11) Ready to Host Checklist
+1. Postgres running; DBs and roles created; SQL imported.
+2. Passwords in [`public/db.php`](public/db.php) match your Postgres users.
+3. Set [`public/status.txt`](public/status.txt) to the starting round (e.g., `1`).
+4. Run `php -S 0.0.0.0:9000 -t public`.
+5. Share `http://<SERVER_IP>:9000` with participants.
