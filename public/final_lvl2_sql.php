@@ -103,9 +103,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="lvl1_sql.php">SQL</a>
+                    <a class="nav-link" href="final_lvl2_sql.php">SQL</a>
                     <a class="nav-link" href="answer.php">ANSWER</a>
-                    <a class="nav-link" href="lvl1_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="final_lvl2_schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
