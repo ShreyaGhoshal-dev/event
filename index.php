@@ -15,16 +15,64 @@ session_start();
         body {
             background: linear-gradient(180deg, #fff7e6, #f5e6c8);
             min-height: 100vh;
-        }
-
-        .card {
-            border-radius: 10px;
-            background-color: #fffaf0;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         .navbar {
-            background-color: #fff3d6 !important;
-            border-bottom: 1px solid #e6d8b8;
+            background-color: rgba(255, 247, 230, 0.95) !important;
+            border-bottom: 1px solid rgba(68, 26, 2, 0.1);
+        }
+
+        .navbar-brand {
+            color: #441a02 !important;
+            font-weight: 800;
+        }
+
+        .nav-link {
+            color: #441a02 !important;
+            font-weight: 600;
+        }
+
+        .card {
+            border-radius: 16px;
+            background-color: #fffaf0;
+            border: none;
+            box-shadow: 0 10px 30px rgba(68, 26, 2, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        h4,
+        h5 {
+            color: #441a02;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background-color: #441a02;
+            border-color: #441a02;
+            padding: 10px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #5e2403;
+            border-color: #5e2403;
+        }
+
+        .form-control {
+            border: 2px solid #e6d2a8;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            border-color: #441a02;
+            box-shadow: 0 0 0 4px rgba(68, 26, 2, 0.1);
         }
     </style>
 
@@ -46,7 +94,7 @@ session_start();
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"

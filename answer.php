@@ -17,47 +17,83 @@ session_start();
     <!-- Custom CSS -->
     <style>
         body {
-            background: linear-gradient(180deg, #fdf2d9, #f7f1c6);
+            background: linear-gradient(180deg, #fff7e6, #f5e6c8);
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
         }
 
-        .custom-navbar {
-            background-color: #fdf2d9;
+        /* Modern Navbar */
+        .navbar {
+            background-color: rgba(253, 242, 217, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(68, 26, 2, 0.1);
+        }
+
+        .navbar-brand {
+            color: #441a02 !important;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: #441a02 !important;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #8a3c04 !important;
+            transform: translateY(-1px);
         }
 
         .answer-card {
             background-color: #fff9e8;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 40px rgba(68, 26, 2, 0.08);
+            border: 1px solid rgba(68, 26, 2, 0.05);
         }
 
         .answer-title {
-            color: #7a3e00;
-            font-weight: 600;
+            color: #441a02;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .answer-desc {
-            color: #a05a00;
+            color: #5e2403;
+            font-size: 1.1rem;
         }
 
         .custom-input {
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #f0b44c;
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid #e6d2a8;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        .custom-input:focus {
+            border-color: #441a02;
+            box-shadow: 0 0 0 4px rgba(68, 26, 2, 0.1);
         }
 
         .submit-btn {
-            background-color: #b85c00;
+            background-color: #441a02;
             color: white;
-            padding: 10px 25px;
-            border-radius: 10px;
+            padding: 12px 35px;
+            border-radius: 12px;
             border: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
         }
 
         .submit-btn:hover {
-            background-color: #9e4f00;
+            background-color: #5e2403;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(68, 26, 2, 0.2);
         }
     </style>
 </head>
@@ -65,7 +101,7 @@ session_start();
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
