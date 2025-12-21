@@ -95,7 +95,7 @@ session_start();
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">HOME</a>
+            <a class="navbar-brand" href="lvl1.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -103,9 +103,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="lvl1_sql.php">SQL</a>
                     <a class="nav-link" href="answer.php">ANSWER</a>
-                    <a class="nav-link" href="schema.php">SCHEMA</a>
+                    <a class="nav-link" href="lvl1_schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
@@ -160,13 +160,15 @@ if ($user_sql != '') {
         } else {
 
             echo "<h4 class='mt-4'>Query Result</h4>";
-            echo "<table class='table table-bordered table-striped mt-2'>";
+            
+            echo "<div class='table-responsive'>";
+            echo "<table class='table table-striped table-hover mt-2'>";
 
             /* ---------- TABLE HEADER ---------- */
             echo "<thead><tr>";
             $num_fields = pg_num_fields($result);
             for ($i = 0; $i < $num_fields; $i++) {
-                echo "<th>" . pg_field_name($result, $i) . "</th>";
+                echo "<th scope='col'>" . pg_field_name($result, $i) . "</th>";
             }
             echo "</tr></thead>";
 
@@ -182,6 +184,7 @@ if ($user_sql != '') {
             echo "</tbody>";
 
             echo "</table>";
+            echo "</div>";
         }
     }
 }
