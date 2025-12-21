@@ -3,4 +3,14 @@ psql  #open postgres
 
 \q  # for exit
 
- php -S localhost:9000
+# Run server for LAN access (0.0.0.0 allows external connections)
+# -t public sets the root folder so users don't see the file list
+php -S 0.0.0.0:9000 -t public
+
+psql -U postgres -f roles_backup.sql
+
+# Create the database first
+createdb -U postgres users
+
+# Import the data
+psql -U postgres -d users -f users.sql
