@@ -160,8 +160,8 @@ session_start();
     <?php
 
     // PostgreSQL connection
-    $conn = pg_connect("host=localhost dbname=users user=postgres password=root");
-
+    include 'db.php';
+    $conn = getDBConnection('users', 'postgres');
 
     if (!$conn) {
         die("Database connection failed");

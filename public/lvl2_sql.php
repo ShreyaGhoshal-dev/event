@@ -131,7 +131,8 @@ session_start();
 
 // IMPORTANT:
 // Ideally this should be a READ-ONLY user and CASE database
-$conn = pg_connect("host=localhost dbname=level_1 user=sqluser password=root");
+include 'db.php';
+$conn = getDBConnection('level_2' , 'sqluser');
 
 if (!$conn) {
     die("<p class='text-danger'>Database connection failed</p>");
