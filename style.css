@@ -1,0 +1,50 @@
+/* ===== PAGE BACKGROUND ===== */
+body {
+  margin: 0;
+  font-family: "Georgia", serif;
+  background: #fdf1c7; /* crime-scene paper */
+  color: #2b2b2b;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+  background: #f6e6b3; /* slightly darker than bg */
+  border-bottom: 2px solid #d6c38a;
+}
+
+nav a {
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+nav a:hover {
+  color: #8b0000; /* blood red hover */
+}
+
+/* ===== SCHEMA CONTAINER ===== */
+.schema-container {
+  max-width: 900px;
+  margin: 30px auto;
+}
+
+/* ===== SCHEMA ROW ===== */
+.schema-row {
+  background: #fff6d8;
+  border: 1px solid #e4d39b;
+  border-left: 6px solid #8b0000; /* murder accent */
+  border-radius: 8px;
+
+  padding: 12px 18px;     /* 🔥 reduces height */
+  margin-bottom: 12px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* subtle hover */
+.schema-row:hover {
+  background: #fff1c1;
+  cursor: pointer;
+}

@@ -5,38 +5,45 @@ $conn = pg_connect("host=localhost dbname=cases user=sqluser password=root");
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="style.css">
+
+
     <title>Schema</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
     .schema-card {
-        background-color: #fff3cd;
+        background-color: #fff1ad;
         border-radius: 10px;
         padding: 15px;
         margin-bottom: 12px;
         font-size: 18px;
         font-weight: 500;
     }
+
+    body {
+            background: linear-gradient(180deg, #FFFFF0);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
     </style>
 </head>
 
 <body>
 
-<ul class="nav nav-tabs mt-3 px-3">
-  <li class="nav-item">
-    <a class="nav-link" href="index.php">Home</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="sql.php">SQL</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="schema.php">Schema</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="answer.php">Answer</a>
-  </li>
-</ul>
+<nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container-fluid">
+        <span class="navbar-brand fw-bold">HOME</span>
+
+        <div class="ms-auto">
+            <a class="nav-link d-inline px-3" href="sql.php">SQL</a>
+            <a class="nav-link d-inline px-3" href="answer.php">ANSWER</a>
+            <a class="nav-link d-inline px-3" href="schema.php">SCHEMA</a>
+        </div>
+    </div>
+</nav>
 
 <div class="container mt-4">
 <?php
