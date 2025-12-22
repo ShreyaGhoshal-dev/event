@@ -151,8 +151,24 @@ session_start();
                             echo '<h2 class="mb-4" style="color:#441a02;">🏆 Round Winners 🏆</h2>';
                             
                             if ($conn) {
-                                // Fetch top 5 users with answers, ordered by time (earliest first)
-                                $sql = "SELECT name, time FROM users WHERE ans IS NOT NULL AND time IS NOT NULL ORDER BY time ASC LIMIT 5";
+                                // 1. Read the correct answer from file
+                                $correct_ans = '';
+                                if (file_exists('correct_answer.txt')) {
+                                    $correct_ans = trim(file_get_contents('correct_answer.txt'));
+                                }
+
+                                // 2. Build Query based on whether an answer is set
+                                if ($correct_ans !== '') {
+                                    // Filter: Only show users with the EXACT answer
+                                    $safe_ans = pg_escape_string($conn, $correct_ans);
+                                    $sql = "SELECT name, time FROM users WHERE ans = '$safe_ans' AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
+                                    
+                                    echo '<div class="alert alert-success py-2 mb-3">Showing winners for answer: <strong>' . htmlspecialchars($correct_ans) . '</strong></div>';
+                                } else {
+                                    // Fallback: If file is empty, show all submissions
+                                    $sql = "SELECT name, time FROM users WHERE ans IS NOT NULL AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
+                                }
+
                                 $result = pg_query($conn, $sql);
                                 
                                 if (pg_num_rows($result) > 0) {
