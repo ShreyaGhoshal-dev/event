@@ -158,8 +158,8 @@ $conn = getDBConnection('final_lvl1' , 'sqluser');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="lvl1.php">HOME</a>
+       <div class="container-fluid">
+            <a class="navbar-brand" href="final_lvl1.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -168,7 +168,7 @@ $conn = getDBConnection('final_lvl1' , 'sqluser');
                 <div class="navbar-nav">
 
                     <a class="nav-link" href="final_lvl1_sql.php">SQL</a>
-                    <a class="nav-link" href="answer.php">ANSWER</a>
+                    <a class="nav-link" href="final_ans1.php">ANSWER</a>
                     <a class="nav-link" href="final_lvl1_schema.php">SCHEMA</a>
                 </div>
             </div>

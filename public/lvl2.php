@@ -96,7 +96,7 @@ session_start();
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="lvl1.php">HOME</a>
+            <a class="navbar-brand" href="lvl2.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -104,9 +104,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="lvl1_sql.php">SQL</a>
-                    <a class="nav-link" href="answer.php">ANSWER</a>
-                    <a class="nav-link" href="lvl1_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="lvl2_sql.php">SQL</a>
+                    <a class="nav-link" href="ans2.php">ANSWER</a>
+                    <a class="nav-link" href="lvl2_schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
