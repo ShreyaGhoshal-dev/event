@@ -127,15 +127,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="lvl2.php">HOME</a>
+        <a class="navbar-brand" href="level.php">HOME</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link" href="lvl2_sql.php">SQL</a>
-                <a class="nav-link" href="ans2.php">ANSWER</a>
-                <a class="nav-link" href="lvl2_schema.php">SCHEMA</a>
+                <a class="nav-link" href="sql.php">SQL</a>
+                <a class="nav-link" href="answer_page.php">ANSWER</a>
+                <a class="nav-link" href="schema.php">SCHEMA</a>
             </div>
         </div>
     </div>
@@ -148,37 +148,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2 class="answer-title mb-3">Submit Your Findings</h2>
 
         <!-- Display Success/Error Message Here -->
-        <?php if ($message != ''): ?>
+        <?php if ($message != ""): ?>
             <div class="alert alert-<?php echo $msgType; ?> alert-dismissible fade show" role="alert">
                 <?php echo $message; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php endif; ?>
 
-        <p class="answer-desc">
-            Submit the suspect you discovered through your investigation to see if you cracked the case.
+        <p class="answer-desc mb-4">
+            Once you have identified the culprit, enter their name below. 
+            Make sure you are certain—accuracy is key!
         </p>
 
-        <form method="POST" action="">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Your Answer</label>
-                <input type="text" name="answer" class="form-control custom-input"
-                       placeholder="Enter your answer..." required>
+        <form method="post">
+            <div class="mb-4">
+                <label for="answer" class="form-label fw-bold" style="color: #441a02;">Culprit's Name</label>
+                <input type="text" class="form-control custom-input" id="answer" name="answer" placeholder="e.g. John Doe" required>
             </div>
-
-            <p class="text-muted">
-                Enter the specific name you found through your investigation.
-            </p>
-
-            <button type="submit" class="submit-btn mt-3">
-                Submit Solution
-            </button>
+            <div class="d-grid">
+                <button type="submit" class="submit-btn">Submit Answer</button>
+            </div>
         </form>
 
     </div>
 </div>
 
-<!-- 2. Auto-Redirect Script: Add this before the closing </body> tag -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     setInterval(function() {
         // Check status.txt every 3 seconds
@@ -194,6 +189,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             .catch(err => console.log('Waiting for status update...'));
     }, 3000);
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

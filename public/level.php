@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+// Redirect if session variables are not set
+if (!isset($_SESSION['level_title'])) {
+    header("Location: index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -96,7 +101,7 @@ session_start();
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="lvl2.php">HOME</a>
+            <a class="navbar-brand" href="level.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -104,9 +109,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="lvl2_sql.php">SQL</a>
-                    <a class="nav-link" href="ans2.php">ANSWER</a>
-                    <a class="nav-link" href="lvl2_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="answer_page.php">ANSWER</a>
+                    <a class="nav-link" href="schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
@@ -117,22 +122,16 @@ session_start();
         <div class="card shadow-sm mb-4">
             <div class="card-body">
 
-                <h4 class="mb-3">The Stolen Sound </h4>
+                <h4 class="mb-3"><?php echo htmlspecialchars($_SESSION['level_title']); ?></h4>
 
                 <p>
-                    In the neon glow of 1980s Los Angeles, the West Hollywood Records store was rocked by a daring
-                    theft. A prized vinyl record, worth over $10,000, vanished during a busy evening, leaving the store
-                    owner desperate for answers. Vaguely recalling the details, you know the incident occurred on July
-                    15, 1983, at this famous store. Your task is to track down the thief and bring them to justice.
+                    <?php echo htmlspecialchars($_SESSION['level_description']); ?>
                 </p>
 
                 <p>
                 <h4 class="mb-3">Objectives </h4>
 
-                1.Retrieve the crime scene report for the record theft using the known date and location. <br>
-                2.Retrieve witness records linked to that crime scene to obtain their clues. <br>
-                3.Use the clues from the witnesses to find the suspect in the suspects table.<br>
-                4.Retrieve the suspect's interview transcript to confirm the confession.<br>
+                <?php echo $_SESSION['level_objectives']; ?>
                 </p>
 
             </div>
@@ -169,8 +168,8 @@ session_start();
 
     // Get input
     $name = $_POST['name'] ?? '';
-    $_SESSION['name'] = $name;
     if ($name != '') {
+        $_SESSION['name'] = $name;
         // Insert into database
         $query = "INSERT INTO users (name) VALUES ('$name')";
         $result = @pg_query($conn, $query); // Use @ to suppress the warning
