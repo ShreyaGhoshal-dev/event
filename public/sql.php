@@ -204,8 +204,9 @@ if ($user_sql != '') {
             fetch('status.txt?t=' + new Date().getTime())
                 .then(response => response.text())
                 .then(status => {
-                    // If status becomes 5 (Winners), redirect immediately
-                    if (status.trim() === '5') {
+                    // If status becomes 0, 5, or reset, redirect immediately
+                    const s = status.trim();
+                    if (s === '5' || s === '0' || s === 'reset') {
                         window.location.href = 'index.php';
                     }
                 })

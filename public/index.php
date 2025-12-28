@@ -175,9 +175,9 @@ session_start();
 
                                 // 2. Build Query based on whether an answer is set
                                 if ($correct_ans !== '') {
-                                    // Filter: Only show users with the EXACT answer
+                                    // Filter: Only show users with the EXACT answer (Case Insensitive)
                                     $safe_ans = pg_escape_string($conn, $correct_ans);
-                                    $sql = "SELECT name, time FROM users WHERE ans = '$safe_ans' AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
+                                    $sql = "SELECT name, time FROM users WHERE LOWER(ans) = LOWER('$safe_ans') AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
                                     
                                     echo '<div class="alert alert-success py-2 mb-3">Showing winners for answer: <strong>' . htmlspecialchars($correct_ans) . '</strong></div>';
                                 } else {
@@ -231,6 +231,20 @@ session_start();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const initialStatus = "<?php echo $status; ?>";
+        setInterval(function() {
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    status = status.trim();
+                    if (status !== initialStatus || ['0', '5', 'reset'].includes(status)) {
+                        location.reload();
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 
 </html>
