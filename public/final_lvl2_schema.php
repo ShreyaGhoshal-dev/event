@@ -241,5 +241,20 @@ while ($row = pg_fetch_assoc($result)) {
     </div>
 </div>
 
+    <script>
+        setInterval(function() {
+            // Check status.txt every 3 seconds
+            // We add a timestamp (?t=...) to prevent browser caching
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    // If status becomes 5 (Winners), redirect immediately
+                    if (status.trim() === '5') {
+                        window.location.href = 'index.php';
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 </html>
