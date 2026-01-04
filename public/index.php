@@ -131,16 +131,32 @@ session_start();
                     // Show button based on the number in status.txt
                     switch ($round) {
                         case 1:
-                            echo '<a href="lvl1.php" class="btn-round">Start Level 1</a>';
+                            $_SESSION['level_db_name'] = 'level_1';
+                            $_SESSION['level_title'] = 'The Vanishing Briefcase';
+                            $_SESSION['level_description'] = 'Set in the gritty 1980s, a valuable briefcase has disappeared from the Blue Note Lounge. A witness reported that a man in a trench coat was seen fleeing the scene. Investigate the crime scene, review the list of suspects, and examine interview transcripts to reveal the culprit.';
+                            $_SESSION['level_objectives'] = '1.Retrieve the correct crime scene details to gather the key clue.<br>2.Identify the suspect whose profile matches the witness description. <br>3.Verify the suspect using their interview transcript. <br>';
+                            echo '<a href="level.php" class="btn-round">Start Level 1</a>';
                             break;
                         case 2:
-                            echo '<a href="lvl2.php" class="btn-round">Start Level 2</a>';
+                            $_SESSION['level_db_name'] = 'level_2';
+                            $_SESSION['level_title'] = 'The Stolen Sound';
+                            $_SESSION['level_description'] = 'In the neon glow of 1980s Los Angeles, the West Hollywood Records store was rocked by a daring theft. A prized vinyl record, worth over $10,000, vanished during a busy evening, leaving the store owner desperate for answers. Vaguely recalling the details, you know the incident occurred on July 15, 1983, at this famous store. Your task is to track down the thief and bring them to justice.';
+                            $_SESSION['level_objectives'] = '1.Retrieve the crime scene report for the record theft using the known date and location. <br>2.Retrieve witness records linked to that crime scene to obtain their clues. <br>3.Use the clues from the witnesses to find the suspect in the suspects table.<br>4.Retrieve the suspect\'s interview transcript to confirm the confession.<br>';
+                            echo '<a href="level.php" class="btn-round">Start Level 2</a>';
                             break;
                         case 3:
-                            echo '<a href="final_lvl1.php" class="btn-round">Start Final Level 1</a>';
+                            $_SESSION['level_db_name'] = 'final_lvl1';
+                            $_SESSION['level_title'] = 'The Midnight Masquerade Murder';
+                            $_SESSION['level_description'] = 'On October 31, 1987, at a Coconut Grove mansion masked ball, Leonard Pierce was found dead in the garden. Can you piece together all the clues to expose the true murderer?';
+                            $_SESSION['level_objectives'] = '1.Reveal the true murderer of this complex case. <br>';
+                            echo '<a href="level.php" class="btn-round">Start Final Level 1</a>';
                             break;
                         case 4:
-                            echo '<a href="final_lvl2.php" class="btn-round">Start Final Level 2</a>';
+                            $_SESSION['level_db_name'] = 'final_lvl2';
+                            $_SESSION['level_title'] = 'The Silicon Sabotage';
+                            $_SESSION['level_description'] = 'QuantumTech, Miami’s leading technology corporation, was about to unveil its groundbreaking microprocessor called “QuantaX.” Just hours before the reveal, the prototype was destroyed, and all research data was erased. Detectives suspect corporate espionage.';
+                            $_SESSION['level_objectives'] = '1.Find who sabotaged the microprocessor. <br>';
+                            echo '<a href="level.php" class="btn-round">Start Final Level 2</a>';
                             break;
                         
                         // Case 5 for Results
@@ -159,9 +175,9 @@ session_start();
 
                                 // 2. Build Query based on whether an answer is set
                                 if ($correct_ans !== '') {
-                                    // Filter: Only show users with the EXACT answer
+                                    // Filter: Only show users with the EXACT answer (Case Insensitive)
                                     $safe_ans = pg_escape_string($conn, $correct_ans);
-                                    $sql = "SELECT name, time FROM users WHERE ans = '$safe_ans' AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
+                                    $sql = "SELECT name, time FROM users WHERE LOWER(ans) = LOWER('$safe_ans') AND time IS NOT NULL ORDER BY time ASC LIMIT 10";
                                     
                                     echo '<div class="alert alert-success py-2 mb-3">Showing winners for answer: <strong>' . htmlspecialchars($correct_ans) . '</strong></div>';
                                 } else {
@@ -215,6 +231,20 @@ session_start();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const initialStatus = "<?php echo $status; ?>";
+        setInterval(function() {
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    status = status.trim();
+                    if (status !== initialStatus || ['0', '5', 'reset'].includes(status)) {
+                        location.reload();
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 
 </html>

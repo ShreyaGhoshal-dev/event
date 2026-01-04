@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['level_db_name'])) {
+    header("Location: index.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -95,7 +99,7 @@ session_start();
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="lvl2.php">HOME</a>
+            <a class="navbar-brand" href="level.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -103,9 +107,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="lvl2_sql.php">SQL</a>
-                    <a class="nav-link" href="ans2.php">ANSWER</a>
-                    <a class="nav-link" href="lvl2_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="answer_page.php">ANSWER</a>
+                    <a class="nav-link" href="schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
@@ -132,7 +136,7 @@ session_start();
 // IMPORTANT:
 // Ideally this should be a READ-ONLY user and CASE database
 include 'db.php';
-$conn = getDBConnection('level_2' , 'sqluser');
+$conn = getDBConnection($_SESSION['level_db_name'] , 'sqluser');
 
 if (!$conn) {
     die("<p class='text-danger'>Database connection failed</p>");
@@ -193,5 +197,21 @@ if ($user_sql != '') {
 
 </div>
 
+    <script>
+        setInterval(function() {
+            // Check status.txt every 3 seconds
+            // We add a timestamp (?t=...) to prevent browser caching
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    // If status becomes 0, 5, or reset, redirect immediately
+                    const s = status.trim();
+                    if (s === '5' || s === '0' || s === 'reset') {
+                        window.location.href = 'index.php';
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 </html>

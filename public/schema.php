@@ -1,6 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION['level_db_name'])) {
+    header("Location: index.php");
+    exit;
+}
+
 include 'db.php';
-$conn = getDBConnection('final_lvl2' , 'sqluser');
+$conn = getDBConnection($_SESSION['level_db_name'] , 'sqluser');
 ?>
 
 <!DOCTYPE html>
@@ -148,7 +154,6 @@ $conn = getDBConnection('final_lvl2' , 'sqluser');
         margin-left: 8px;
         font-weight: bold;
     }
-
     </style>
 </head>
 
@@ -159,7 +164,7 @@ $conn = getDBConnection('final_lvl2' , 'sqluser');
 
 <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="final_lvl2.php">HOME</a>
+            <a class="navbar-brand" href="level.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -167,9 +172,9 @@ $conn = getDBConnection('final_lvl2' , 'sqluser');
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="final_lvl2_sql.php">SQL</a>
-                    <a class="nav-link" href="final_ans2.php">ANSWER</a>
-                    <a class="nav-link" href="final_lvl2_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="answer_page.php">ANSWER</a>
+                    <a class="nav-link" href="schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
@@ -201,39 +206,34 @@ while ($row = pg_fetch_assoc($result)) {
         LEFT JOIN information_schema.table_constraints tc 
             ON kcu.constraint_name = tc.constraint_name
         WHERE c.table_name = '$tableName'
-        ORDER BY c.ordinal_position
     ";
+    
     $colResult = pg_query($conn, $colQuery);
     
     echo '
-    <div class="dropdown mb-3">
-        <button class="btn btn-schema-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span>🗂 ' . $tableName . '</span>
-        </button>
-        <ul class="dropdown-menu w-100">
-            <li><h6 class="dropdown-header text-uppercase fw-bold" style="color:#8a3c04; letter-spacing:1px;">Columns</h6></li>';
-            
-            if (pg_num_rows($colResult) > 0) {
-                while ($colRow = pg_fetch_assoc($colResult)) {
-                    $badges = '';
-                    if ($colRow['constraint_type'] == 'PRIMARY KEY') {
-                        $badges .= '<span class="badge-pk">PK</span>';
-                    }
-                    if ($colRow['constraint_type'] == 'FOREIGN KEY') {
-                        $badges .= '<span class="badge-fk">FK</span>';
-                    }
-
-                    echo '<li><span class="dropdown-item-text">
-                            🔹 ' . $colRow['column_name'] . ' 
-                            <span class="col-type">' . $colRow['data_type'] . '</span>
-                            ' . $badges . '
-                          </span></li>';
-                }
-            } else {
-                echo '<li><span class="dropdown-item-text text-muted">No columns found</span></li>';
-            }
-            
-    echo '</ul>
+    <div class="mb-3">
+        <div class="dropdown">
+            <button class="btn btn-schema-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                ' . htmlspecialchars($tableName) . '
+            </button>
+            <ul class="dropdown-menu w-100">
+    ';
+    
+    while ($col = pg_fetch_assoc($colResult)) {
+        $pkBadge = ($col['constraint_type'] == 'PRIMARY KEY') ? '<span class="badge-pk">PK</span>' : '';
+        $fkBadge = ($col['constraint_type'] == 'FOREIGN KEY') ? '<span class="badge-fk">FK</span>' : '';
+        
+        echo '
+        <li class="dropdown-item-text">
+            ' . htmlspecialchars($col['column_name']) . '
+            <span class="col-type">' . htmlspecialchars($col['data_type']) . '</span>
+            ' . $pkBadge . $fkBadge . '
+        </li>';
+    }
+    
+    echo '
+            </ul>
+        </div>
     </div>';
 }
 ?>
@@ -241,5 +241,20 @@ while ($row = pg_fetch_assoc($result)) {
     </div>
 </div>
 
+    <script>
+        setInterval(function() {
+            // Check status.txt every 3 seconds
+            // We add a timestamp (?t=...) to prevent browser caching
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    // If status becomes 5 (Winners), redirect immediately
+                    if (status.trim() === '5') {
+                        window.location.href = 'index.php';
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 </html>

@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+// Redirect if session variables are not set
+if (!isset($_SESSION['level_title'])) {
+    header("Location: index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -96,7 +101,7 @@ session_start();
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="final_lvl1.php">HOME</a>
+            <a class="navbar-brand" href="level.php">HOME</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -104,9 +109,9 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
 
-                    <a class="nav-link" href="final_lvl1_sql.php">SQL</a>
-                    <a class="nav-link" href="final_ans1.php">ANSWER</a>
-                    <a class="nav-link" href="final_lvl1_schema.php">SCHEMA</a>
+                    <a class="nav-link" href="sql.php">SQL</a>
+                    <a class="nav-link" href="answer_page.php">ANSWER</a>
+                    <a class="nav-link" href="schema.php">SCHEMA</a>
                 </div>
             </div>
         </div>
@@ -117,17 +122,16 @@ session_start();
         <div class="card shadow-sm mb-4">
             <div class="card-body">
 
-                <h4 class="mb-3">The Midnight Masquerade Murder </h4>
+                <h4 class="mb-3"><?php echo htmlspecialchars($_SESSION['level_title']); ?></h4>
 
                 <p>
-                    On October 31, 1987, at a Coconut Grove mansion masked ball, Leonard Pierce was found dead in the
-                    garden. Can you piece together all the clues to expose the true murderer?
+                    <?php echo htmlspecialchars($_SESSION['level_description']); ?>
                 </p>
 
                 <p>
                 <h4 class="mb-3">Objectives </h4>
 
-                1.Reveal the true murderer of this complex case. <br>
+                <?php echo $_SESSION['level_objectives']; ?>
                 </p>
 
             </div>
@@ -158,19 +162,18 @@ session_start();
     include 'db.php';
     $conn = getDBConnection('users', 'postgres');
 
-
     if (!$conn) {
         die("Database connection failed");
     }
 
     // Get input
     $name = $_POST['name'] ?? '';
-    $_SESSION['name'] = $name;
     if ($name != '') {
+        $_SESSION['name'] = $name;
         // Insert into database
         $query = "INSERT INTO users (name) VALUES ('$name')";
         $result = @pg_query($conn, $query); // Use @ to suppress the warning
-    
+
         if ($result) {
             echo '
             <div class="container mt-3">
@@ -196,6 +199,22 @@ session_start();
     }
     ?>
 
+    <script>
+        setInterval(function() {
+            // Check status.txt every 3 seconds
+            // We add a timestamp (?t=...) to prevent browser caching
+            fetch('status.txt?t=' + new Date().getTime())
+                .then(response => response.text())
+                .then(status => {
+                    // If status becomes 0, 5, or reset, redirect immediately
+                    const s = status.trim();
+                    if (s === '5' || s === '0' || s === 'reset') {
+                        window.location.href = 'index.php';
+                    }
+                })
+                .catch(err => console.log('Waiting for status update...'));
+        }, 3000);
+    </script>
 </body>
 
 </html>
